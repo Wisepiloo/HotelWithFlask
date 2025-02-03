@@ -8,19 +8,15 @@ Este proyecto fue desarrollado por alumnos de la Facultad de Ingeniería de Buen
 architecture-beta
     group frontend[frontend]
     group backend[backend]
-    group mobile[mobile]
     
-    service serverMobile(server) in mobile
     service serverFrontend(server) in frontend
     service serverBackend(server) in backend
     service db(database) in backend
     service user[user]
     
     user:B --> T:serverFrontend
-    user:R --> L:serverMobile
     serverFrontend:R --> L:serverBackend
     serverBackend:R --> L:db
-    serverMobile:B --> T:serverBackend
 ```
 
 ## Tecnologías usadas
@@ -30,4 +26,3 @@ architecture-beta
 - CSS
 - Javascript
 - MySQL
-- Kivy
