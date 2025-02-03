@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Reservas{% endblock %}
+
+{% block styles %}
+ <link rel="stylesheet" href="{{ url_for('static', filename = 'css/reservas.css') }}">
+{% endblock %}
+
+{% block header %}{% endblock %}
+
+
+{% block body %}
+<h1>Tu reserva</h1>
+<div class="contenedor-datos" >
+  <div class="container">
+    <h2>Información del Huésped</h2>
+    <form action="{{ url_for('confirmReservation')  }}" method="post"> 
+
+        <label for="fsecondName">Apellido:</label>
+        <input type="text" id="secondName" name="fsecondName" placeholder="Ingrese su apellido" required>
+        <input type="hidden" name="fstartDate" value="{{ start_date }}">
+        <input type="hidden" name="fendDate" value="{{ end_date }}">
+        <input type="hidden" name="fdataroom" value="{{ room['id'] }}">
+        <input type="hidden" name="fpriceFinal" value="{{ room['precio'] * diference_days }}">
+        <h2> Servicios incluidos </h2>
+        <ul>
+          {% for servicio in servicios %}
+          <li>{{ servicio['servicio'] }}</li>
+          {% endfor %}
+        </ul>
+        <h2> Estancia: {{ diference_days }} dias</h2>
+        <p class="button-price"   > total: {{ room.precio * diference_days  }} USD  </p>
+
+        <button class="button-confirm" type="submit">Reservar Ahora</button>
+    </form>
+  </div>
+  
+  <div class="container">
+    <img id="imageHabitacion" src="{{ room.url_img }}">
+    <h2 id="Habitacion"> {{ room.nombre }}, Habitacion {{ room['tipo'] }}</h2>
+    <label for="Fechas">Fechas de estancia</label>
+    <p> {{ start_date }} hasta {{ end_date }}  </p>
+    
+    <label for="tipo">Tipo de Habitacion</label>
+    <p>{{ room.tipo }}</p>
+
+  </div>
+</div>
+
+{% endblock %}

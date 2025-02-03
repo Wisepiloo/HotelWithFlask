@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Habitaciones{% endblock %}
+
+{% block styles %} 
+  <link rel="stylesheet" href="{{ url_for('static', filename = 'css/habitaciones.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename = 'css/flatpickr.css') }}">
+{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block body %}
+    <main>
+      <form class="booking" action="{{ url_for('habitaciones') }}" method="POST" novalidate>
+        <div class="booking__select">
+          <label for="region">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M22 21H2V19H3V4C3 3.44772 3.44772 3 4 3H18C18.5523 3 19 3.44772 19 4V9H21V19H22V21ZM17 19H19V11H13V19H15V13H17V19ZM17 9V5H5V19H11V9H17ZM7 11H9V13H7V11ZM7 15H9V17H7V15ZM7 7H9V9H7V7Z"></path></svg>
+            <span>Region</span>
+          </label>
+          <div class="custom-select">
+            <div
+              class="select-button"
+              role="combobox"
+              aria-label="select button"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="select-dropdown"
+            >
+              <span class="selected-value">Region</span>
+              <span class="arrow"></span>
+            </div>
+            <ul class="select-dropdown" role="listbox" id="select-dropdown">
+              {% for region in regions %}
+                <li role="option">
+                  <input type="radio" id="{{ region }}" value="{{ region }}" name="region" />
+                  <label for="{{ region }}">{{ region }}</label>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+        <div class="booking__dates">
+          <label for="dates">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 1V3H15V1H17V3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H7V1H9ZM20 11H4V19H20V11ZM8 13V15H6V13H8ZM13 13V15H11V13H13ZM18 13V15H16V13H18ZM7 5H4V9H20V5H17V7H15V5H9V7H7V5Z"></path></svg>
+            <span>1 noche</span>
+          </label>
+          <input type="text" id="dates" name="dates">
+        </div>
+
+        <div class="booking__room">
+          <label for="habitacion">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M22 21H2V19H3V4C3 3.44772 3.44772 3 4 3H18C18.5523 3 19 3.44772 19 4V9H21V19H22V21ZM17 19H19V11H13V19H15V13H17V19ZM17 9V5H5V19H11V9H17ZM7 11H9V13H7V11ZM7 15H9V17H7V15ZM7 7H9V9H7V7Z"></path></svg>
+            <span>habitación</span>
+          </label>
+          <div class="custom-select">
+            <div
+              class="select-button"
+              role="combobox"
+              aria-label="select button"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="select-dropdown"
+            >
+              <span class="selected-value">Tipo</span>
+              <span class="arrow"></span>
+            </div>
+            <ul class="select-dropdown" role="listbox" id="select-dropdown">
+              {% for room_type in room_types %}
+                <li role="option">
+                  <input type="radio" id="{{ room_type }}" value="{{ room_type }}" name="type" />
+                  <label for="{{ room_type }}">{{ room_type }}</label>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <button type="submit" class="btn btn--primary btn--size-medium">Buscar</button>
+      </form>
+
+      <section id="room">
+        {% for room in rooms %}
+          <article class="room__card">
+            <div class="room__card__image">
+              <img src="{{ room['url_img'] }}" alt="image-habitacion-{{room['nombre']}}-{{room['tipo']}}">
+            </div>
+            <div class="room__card__content">
+              <h3>{{ room['nombre'] }}</h3>
+              <p>Habitación: {{ room['numero'] }}</p>
+              <p>Tipo: {{ room['tipo'] }}</p>
+              <div class="room__card__services">
+                {% for service in room['servicios'] %}
+                  <div class="btn btn--secondary btn--size-icon">
+                    {% if service['servicio'] == 'WiFi' %}
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M54.2 202.9C123.2 136.7 216.8 96 320 96s196.8 40.7 265.8 106.9c12.8 12.2 33 11.8 45.2-.9s11.8-33-.9-45.2C549.7 79.5 440.4 32 320 32S90.3 79.5 9.8 156.7C-2.9 169-3.3 189.2 8.9 202s32.5 13.2 45.2 .9zM320 256c56.8 0 108.6 21.1 148.2 56c13.3 11.7 33.5 10.4 45.2-2.8s10.4-33.5-2.8-45.2C459.8 219.2 393 192 320 192s-139.8 27.2-190.5 72c-13.3 11.7-14.5 31.9-2.8 45.2s31.9 14.5 45.2 2.8c39.5-34.9 91.3-56 148.2-56zm64 160a64 64 0 1 0 -128 0 64 64 0 1 0 128 0z"/></svg>
+                    {% elif service['servicio'] == 'Desayuno' %}
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M96 64c0-17.7 14.3-32 32-32l320 0 64 0c70.7 0 128 57.3 128 128s-57.3 128-128 128l-32 0c0 53-43 96-96 96l-192 0c-53 0-96-43-96-96L96 64zM480 224l32 0c35.3 0 64-28.7 64-64s-28.7-64-64-64l-32 0 0 128zM32 416l512 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 480c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg>
+                    {% elif service['servicio'] == 'Gimnasio' %}
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M96 64c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 160 0 64 0 160c0 17.7-14.3 32-32 32l-32 0c-17.7 0-32-14.3-32-32l0-64-32 0c-17.7 0-32-14.3-32-32l0-64c-17.7 0-32-14.3-32-32s14.3-32 32-32l0-64c0-17.7 14.3-32 32-32l32 0 0-64zm448 0l0 64 32 0c17.7 0 32 14.3 32 32l0 64c17.7 0 32 14.3 32 32s-14.3 32-32 32l0 64c0 17.7-14.3 32-32 32l-32 0 0 64c0 17.7-14.3 32-32 32l-32 0c-17.7 0-32-14.3-32-32l0-160 0-64 0-160c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32zM416 224l0 64-192 0 0-64 192 0z"/></svg>
+                    {% elif service['servicio'] == 'Spa' %}
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M183.1 235.3c33.7 20.7 62.9 48.1 85.8 80.5c7 9.9 13.4 20.3 19.1 31c5.7-10.8 12.1-21.1 19.1-31c22.9-32.4 52.1-59.8 85.8-80.5C437.6 207.8 490.1 192 546 192l9.9 0c11.1 0 20.1 9 20.1 20.1C576 360.1 456.1 480 308.1 480L288 480l-20.1 0C119.9 480 0 360.1 0 212.1C0 201 9 192 20.1 192l9.9 0c55.9 0 108.4 15.8 153.1 43.3zM301.5 37.6c15.7 16.9 61.1 71.8 84.4 164.6c-38 21.6-71.4 50.8-97.9 85.6c-26.5-34.8-59.9-63.9-97.9-85.6c23.2-92.8 68.6-147.7 84.4-164.6C278 33.9 282.9 32 288 32s10 1.9 13.5 5.6z"/></svg>
+                    {% elif service['servicio'] == 'Piscina' %}
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M309.5 178.4L447.9 297.1c-1.6 .9-3.2 2-4.8 3c-18 12.4-40.1 20.3-59.2 20.3c-19.6 0-40.8-7.7-59.2-20.3c-22.1-15.5-51.6-15.5-73.7 0c-17.1 11.8-38 20.3-59.2 20.3c-10.1 0-21.1-2.2-31.9-6.2C163.1 193.2 262.2 96 384 96l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-26.9 0-52.3 6.6-74.5 18.4zM160 160A64 64 0 1 1 32 160a64 64 0 1 1 128 0zM306.5 325.9C329 341.4 356.5 352 384 352c26.9 0 55.4-10.8 77.4-26.1c0 0 0 0 0 0c11.9-8.5 28.1-7.8 39.2 1.7c14.4 11.9 32.5 21 50.6 25.2c17.2 4 27.9 21.2 23.9 38.4s-21.2 27.9-38.4 23.9c-24.5-5.7-44.9-16.5-58.2-25C449.5 405.7 417 416 384 416c-31.9 0-60.6-9.9-80.4-18.9c-5.8-2.7-11.1-5.3-15.6-7.7c-4.5 2.4-9.7 5.1-15.6 7.7c-19.8 9-48.5 18.9-80.4 18.9c-33 0-65.5-10.3-94.5-25.8c-13.4 8.4-33.7 19.3-58.2 25c-17.2 4-34.4-6.7-38.4-23.9s6.7-34.4 23.9-38.4c18.1-4.2 36.2-13.3 50.6-25.2c11.1-9.4 27.3-10.1 39.2-1.7c0 0 0 0 0 0C136.7 341.2 165.1 352 192 352c27.5 0 55-10.6 77.5-26.1c11.1-7.9 25.9-7.9 37 0z"/></svg>
+                    {% elif service['servicio'] == 'TV' %}
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M64 64l0 288 512 0 0-288L64 64zM0 64C0 28.7 28.7 0 64 0L576 0c35.3 0 64 28.7 64 64l0 288c0 35.3-28.7 64-64 64L64 416c-35.3 0-64-28.7-64-64L0 64zM128 448l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-384 0c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg>
+                    {% else %}
+                      <!-- icono de pregunta -->
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M80 160c0-35.3 28.7-64 64-64l32 0c35.3 0 64 28.7 64 64l0 3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74l0 1.4c0 17.7 14.3 32 32 32s32-14.3 32-32l0-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7l0-3.6c0-70.7-57.3-128-128-128l-32 0C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"/></svg>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="room__card__footer">
+              <a class="btn btn--primary btn--size-medium" href="{{url_for('reservar', id_room=room['id'], start_date=meta_start_date, end_date=meta_end_date)}}">
+                Reservar por {{ room['precio'] }} USD la noche
+              </a>
+            </div>
+          </article>
+        {% endfor %}
+      </section>
+    </main>
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/flatpickr.min.js"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+  <script>
+    const date = new Date();
+    const nextDate = new Date();
+    nextDate.setDate(date.getDate() + 1);
+
+    const config = {
+      locale: "es",
+      altInput: true,
+      altFormat: "M. j",
+      mode: "range",
+      monthSelectorType: "static",
+      minDate: date,
+      defaultDate: [date, nextDate],
+      onChange: function(selectedDates, dateStr, instance) {
+        if (selectedDates[1] === undefined || selectedDates[0] === undefined) {
+          return;
+        }
+
+        const diffTime = selectedDates[1].getTime() - selectedDates[0].getTime();
+        const days = Math.round(diffTime / (1000 * 60 * 60 * 24));
+        
+        let nights = (days > 1) ? `${days} noches` : "1 noche";
+
+        const element = document.querySelector("label[for='dates'] span");
+        element.textContent = nights;
+      }
+    }
+    flatpickr("#dates", config);
+  </script>
+  <script src="{{ url_for('static', filename ='js/select-dropdown.js')}}"></script>
+{% endblock %}

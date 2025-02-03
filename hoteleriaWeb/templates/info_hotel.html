@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Sucursales{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename = 'css/info_hoteles.css') }}">
+{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block body %}
+    <section id="sobre">
+      {% for articulo in params %}
+        <article class="card">
+          <div class="card__content">
+            <aside class="card__header">
+              <h1 class="card__title"> {{articulo['region']}} - {{ articulo['nombre']}}.</h1>
+            </aside>
+            <aside>
+              <h2>Información General.</h2>
+        <p><strong>Dirección:</strong> {{ articulo['direccion'] }}</p>
+        <p><strong>Ubicación:</strong> {{ articulo['region'] }}</p>
+            </aside>
+            <aside class="card__description">
+              <h2>Servicios Disponibles.</h2>
+        <ul>
+          {% for servicio in servicios %}
+            {% if articulo["id"] == servicio["id_hotel"] %}
+              <li><strong>- {{ servicio['servicio'] }}</strong>.</li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+            </aside>
+            <aside class="card__description">
+              <h2>Opinión.</h2>
+              <p> {{ articulo['descripcion'] }} </p>
+            </aside>
+          </div>
+          <div class="card__image">
+           
+          </div>
+        </article>
+        <br><br>
+        {% endfor %}
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/flatpickr.min.js"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+  <script>
+    const date = new Date();
+    const nextDate = new Date();
+    nextDate.setDate(date.getDate() + 1);
+
+    const config = {
+      locale: "es",
+      altInput: true,
+      altFormat: "M. j",
+      mode: "range",
+      monthSelectorType: "static",
+      minDate: date,
+      defaultDate: [date, nextDate],
+      onChange: function(selectedDates, dateStr, instance) {
+        if (selectedDates[1] === undefined || selectedDates[0] === undefined) {
+          return;
+        }
+
+        const diffTime = selectedDates[1].getTime() - selectedDates[0].getTime();
+        const days = Math.round(diffTime / (1000 * 60 * 60 * 24));
+        
+        let nights = (days > 1) ? `${days} noches` : "1 noche";
+
+        const element = document.querySelector("label[for='dates'] span");
+        element.textContent = nights;
+      }
+    }
+    flatpickr("#dates", config);
+  </script>
+
+{% endblock %}

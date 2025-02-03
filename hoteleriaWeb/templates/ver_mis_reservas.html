@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi reserva{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename = 'css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename = 'css/ver_mis_reservas.css') }}">
+{% endblock %}
+
+{% block header %}
+
+{% endblock %}
+
+{% block body %}
+     <section id="sobre" style="width:80% ;"  >
+        <article class="card" style="width: 80%;">
+          <div class="card__content">
+            <aside class="card__header">
+              <h2 class="card__title">Datos reserva</h2>
+            </aside>
+            <aside class="card__description">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Número de Reserva</th>
+                            <th>Habitación</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Ejemplo de reserva -->
+                        <tr>
+                            <td>{{reserva[0]['id']}}</td>
+                            <td>{{habitacion[0]['tipo']}}</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha de Check-in</th>
+                            <th>Fecha de Check-out</th>
+                           
+                           
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Ejemplo de reserva -->
+                        <tr>
+                            <td>{{reserva[0]['llegada']}}</td>
+                            <td>{{reserva[0]['salida']}}</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sucursal</th>
+                            <th>Estado</th>
+                           
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Ejemplo de reserva -->
+                        <tr>
+                            <td>{{ hotel[0]['nombre'] }} - {{ hotel[0]['region'] }}</td>
+                            <td>{{ reserva[0]['estado'] }}</td>
+                           
+                        </tr>
+                        
+                    </tbody>
+                </table>
+
+            </aside>
+          
+          </div>
+
+          <div class="card__content" style="height: 100%;">
+            <aside class="card__header">
+              <h2 class="card__title">Servicios Incluidos</h2>
+            </aside>
+            <aside class="card__description" style="height: 80%;">
+                <ul>
+                    {% for servicio in servicios_incluidos %}
+                    <li>{{ servicio['servicio'] }}</li>
+                    {% endfor %}
+                </ul>
+                <h2 class="card__title">Servicios Contratados</h2>
+                <ul>
+                    {% for servicio in servicios_aparte %}
+                        <li>{{ servicio }}</li>   
+                    {% endfor %}
+                </ul>
+            </aside>
+     
+          </div>
+        
+        </article>
+        <a href = "{{ url_for('index') }}" class="btn btn--primary btn--size-medium">Volver al inicio.</a>
+        {% if reserva[0]['estado'] != 'cancelado' %}
+          <form action="{{ url_for('informacion_reserva') }}" method="POST">
+            <input type="hidden" name="cancelar_id_reserva" value="{{ reserva[0]['id'] }}">
+            <input type="hidden" name="cancelar_apellido_cliente" value="{{ apellido_cliente }}">
+            <button type="submit" class="btn btn--warning btn--size-medium">Cancelar Reserva</button>
+          </form>
+        {% endif %}
+      </section> 
+{% endblock %}
+
+{% block scripts %}{% endblock %}

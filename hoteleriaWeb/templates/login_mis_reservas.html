@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Buscar mi reserva {% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login_mis_reservas.css') }}">
+{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block body %}
+            <section id="sobre">
+                <form action="{{ url_for('informacion_reserva') }}" method="post">
+                  <article class="card">
+                    <div class="card__content">
+  
+                      <aside class="card__header">
+                        <h2 class="card__title">Mi reserva</h2>
+                      </aside>
+                      <aside class="card__description">
+                        <label for="input_1">
+                          Numero reserva
+                        </label>
+                        <input class="btn" id="input_1" type="number" id="numero_reserva" name = "nreserva" required>
+                        <label for="input_2">
+                          Apellido
+                        </label>
+                        <input class="btn" id="input_2" type="text" id="apellido_cliente" name = "acliente" required>
+                      </aside>
+  
+                      <div >
+                          <input type="submit" value="Verificar reserva" class="btn btn--warning btn--size-medium btn-medium-large" >
+                      </div>
+                      {{error}}
+                    </div>
+  
+                    <div class="card__image">
+                      <img src="{{ url_for('static', filename = 'assets/garden-area.jpg')}}" alt="Estancias del Sol">
+                    </div>
+                  </article>
+                </form>
+              </section>
+
+             
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    function cancelarReserva(reservaId) {
+        const confirmacion = confirm("¿Estás seguro de que deseas cancelar esta reserva?");
+        if (confirmacion) {
+            alert("Reserva " + reservaId + " cancelada.");
+        }
+    }
+  </script>
+{% endblock %}

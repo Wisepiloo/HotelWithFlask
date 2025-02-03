@@ -1,0 +1,38 @@
+# https://github.com/compose-spec/compose-spec/blob/main/spec.md#extension
+x-common-environment: &common-environment
+  MYSQL_USER: "test"
+  MYSQL_PASSWORD: "test123"
+  MYSQL_DATABASE: "hoteles"
+
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      <<: *common-environment
+      MYSQL_ROOT_PASSWORD: "admintest123"
+    volumes:
+      - ./hoteleriaApi/hoteles.sql:/docker-entrypoint-initdb.d/hoteles.sql
+
+  backend:
+    build:
+      context: ./hoteleriaApi
+      dockerfile: Dockerfile
+    ports:
+      - "3648:3648"
+    environment:
+      <<: *common-environment
+      MYSQL_HOST: "db"
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./hoteleriaWeb
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - backend
+
+

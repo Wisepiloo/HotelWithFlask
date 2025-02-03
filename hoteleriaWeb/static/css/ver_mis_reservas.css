@@ -1,0 +1,6 @@
+#sobre {
+  margin-top: var(--header-height);
+  padding: var(--space-xx-large) 0;
+  width: 85%;
+  gap: var(--space-x-large);
+}

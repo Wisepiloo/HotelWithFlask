@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Hotel Estancias del Sol{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/flatpickr.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block body %}
+    <section id="inicio">
+      <article class="hero-image">
+        <aside class="hero-image-opacity">
+          <div class="hero-image-content">
+            <form class="booking" action="{{ url_for('habitaciones') }}" method="POST" novalidate>
+              <div class="booking__select">
+                <label for="hotel">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M22 21H2V19H3V4C3 3.44772 3.44772 3 4 3H18C18.5523 3 19 3.44772 19 4V9H21V19H22V21ZM17 19H19V11H13V19H15V13H17V19ZM17 9V5H5V19H11V9H17ZM7 11H9V13H7V11ZM7 15H9V17H7V15ZM7 7H9V9H7V7Z"></path></svg>
+                  <span>Hotel</span>
+                </label>
+                <div class="custom-select">
+                  <div
+                    class="select-button"
+                    role="combobox"
+                    aria-label="select button"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-controls="select-dropdown"
+                  >
+                    <span class="selected-value">Seleccione un hotel</span>
+                    <span class="arrow"></span>
+                  </div>
+                  <ul class="select-dropdown" role="listbox" id="select-dropdown">
+                    {% for region in regions %}
+                      <li role="option">
+                        <input type="radio" id="{{ region }}" value="{{ region }}" name="region" />
+                        <label for="{{ region }}">{{ region }}</label>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+              <div class="booking__dates">
+                <label for="dates">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 1V3H15V1H17V3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H7V1H9ZM20 11H4V19H20V11ZM8 13V15H6V13H8ZM13 13V15H11V13H13ZM18 13V15H16V13H18ZM7 5H4V9H20V5H17V7H15V5H9V7H7V5Z"></path></svg>
+                  <span>1 noche</span>
+                </label>
+                <input type="text" id="dates" name="dates">
+              </div>
+              <button type="submit" class="btn btn--primary btn--size-medium">Reserva Online</button>
+            </form>
+          </div>
+        </aside>
+      </article>
+    </section>
+
+    <section id="sobre">
+      <article class="card">
+        <div class="card__content">
+          <aside class="card__header">
+            <h2 class="card__title">Bienvenidos a Estancias del Sol</h2>
+            <h5 class="card__subtitle">Su hogar lejos de casa</h5>
+          </aside>
+          <aside class="card__description">
+            <p>
+              Desde nuestra fundación, nos hemos dedicado a ofrecer una experiencia de alojamiento única y memorable en cada uno de nuestros destinos.
+            </p>
+            <p>
+              Ven y descubre por qué Estancias del Sol es la elección perfecta para tu próxima aventura en Argentina.
+            </p>
+          </aside>
+          <a href="#inicio" class="btn btn--primary btn--size-medium">Reserva Online</a>
+        </div>
+        <div class="card__image">
+          <img src="{{ url_for('static', filename = 'assets/garden-area.jpg') }}" alt="Estancias del Sol">
+        </div>
+      </article>
+    </section>
+
+    <section id="hoteles">
+      <h2>Nuestras ubicaciones</h2>
+     
+      <div class="hoteles__container">
+          {% for hotel in hotels %}
+            <article class="card">
+              <div class="card__image">
+                <img src="{{ hotel['url_img'] }}" alt="Hotel en {{ hotel['region'] }}">
+              </div>
+              <div class="card__content">
+                <aside class="card__header">
+                  <h3 class="card__title">{{ hotel['region'] }}</h3>
+                </aside>
+                <aside class="card__description">
+                  <p>
+                    {{ hotel['descripcion'] }}
+                  </p>
+                </aside>
+                <a href="{{ url_for('hoteles', id_hotel = hotel['id']) }}" class="btn btn--primary btn--size-medium">Más información</a>
+              </div>
+            </article>
+          {% endfor %}
+      </div>
+    </section>
+{% endblock %}
+
+
+{% block scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/flatpickr.min.js"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+  <script>
+    const date = new Date();
+    const nextDate = new Date();
+    nextDate.setDate(date.getDate() + 1);
+
+    const config = {
+      locale: "es",
+      altInput: true,
+      altFormat: "M. j",
+      mode: "range",
+      monthSelectorType: "static",
+      minDate: date,
+      defaultDate: [date, nextDate],
+      onChange: function(selectedDates, dateStr, instance) {
+        if (selectedDates[1] === undefined || selectedDates[0] === undefined) {
+          return;
+        }
+
+        const diffTime = selectedDates[1].getTime() - selectedDates[0].getTime();
+        const days = Math.round(diffTime / (1000 * 60 * 60 * 24));
+        
+        let nights = (days > 1) ? `${days} noches` : "1 noche";
+
+        const element = document.querySelector("label[for='dates'] span");
+        element.textContent = nights;
+      }
+    }
+    flatpickr("#dates", config);
+  </script>
+  <script src="{{ url_for('static', filename ='js/select-dropdown.js')}}"></script>
+{% endblock %}
